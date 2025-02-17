@@ -24,6 +24,8 @@ import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import jakarta.mail.MessagingException;
+import jakarta.mail.Multipart;
+import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeUtility;
 import org.apache.tika.mime.MimeTypes;
@@ -32,6 +34,7 @@ import org.simplejavamail.converter.EmailConverter;
 import util.*;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -316,13 +319,36 @@ public class MimeMessageConverter {
 
         // Append attachment filename list to body
         if (addAttachmentNames) {
-            String attachmentsHtml = "";
-            List<AttachmentResource> attachments = EmailConverter.mimeMessageToEmail(message).getAttachments();
-            if (attachments.size() > 0) {
-                for (AttachmentResource attach : attachments) {
-                    attachmentsHtml += String.format(ATTACHMENT_ITEM_TEMPLATE, attach.getName());
+            ArrayList<String> attachments = new ArrayList<>();
+            try {
+                List<AttachmentResource> _attachments = EmailConverter.mimeMessageToEmail(message).getAttachments();
+                for (AttachmentResource attachment : _attachments) {
+                    attachments.add(attachment.getName());
                 }
-                htmlBody += String.format(ATTACHMENT_LIST_TEMPLATE, "Attachments:", attachmentsHtml);
+            } catch (Exception e) {
+                Logger.error("Error getting attachments from EmailConverter", Throwables.getStackTraceAsString(e));
+                if (message.isMimeType("multipart/*")) {
+                    Multipart multipart = (Multipart) message.getContent();
+                    for (int i = 0; i < multipart.getCount(); i++) {
+                        MimeBodyPart part = (MimeBodyPart) multipart.getBodyPart(i);
+                        String disposition = part.getDisposition();
+                        if (
+                            disposition != null && (disposition.equals(MimeBodyPart.ATTACHMENT) || disposition.equals(MimeBodyPart.INLINE))
+                        ) {
+                            String filename = part.getFileName();
+                            if (filename != null) {
+                                attachments.add(filename);
+                            }
+                        }
+                    }
+                }
+            }
+            StringBuilder attachmentsHtml = new StringBuilder();
+            if (!attachments.isEmpty()) {
+                for (String attach : attachments) {
+                    attachmentsHtml.append(String.format(ATTACHMENT_ITEM_TEMPLATE, attach));
+                }
+                htmlBody += String.format(ATTACHMENT_LIST_TEMPLATE, "Attachments:", attachmentsHtml.toString());
             }
         }
 
