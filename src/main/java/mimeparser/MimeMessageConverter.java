@@ -34,7 +34,6 @@ import org.simplejavamail.converter.EmailConverter;
 import util.*;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;

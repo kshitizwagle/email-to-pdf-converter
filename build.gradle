@@ -2,21 +2,24 @@ plugins {
     id 'java'
     id 'eclipse'
 
-    id 'com.diffplug.spotless' version '6.13.0'
-    id 'com.github.spotbugs' version '4.5.1'
+    id 'com.diffplug.spotless' version '6.25.0'
+    id 'com.github.spotbugs' version '6.0.15'
 
     id 'jacoco'
 
-    id 'com.github.johnrengelman.shadow' version '6.0.0'
-    id 'com.github.ben-manes.versions' version '0.33.0'
-    id 'com.palantir.git-version' version '0.12.3'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'com.github.ben-manes.versions' version '0.51.0'
+    id 'com.palantir.git-version' version '3.1.0'
 }
 
-sourceCompatibility = 1.7
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
 
 /* git version */
 def gitVersionDetails = versionDetails()
-version = gitVersionDetails.lastTag
+version = gitVersionDetails.lastTag ?: 'untagged'
 
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
@@ -30,7 +33,7 @@ jar {
 }
 
 shadowJar {
-    baseName = 'emailconverter'
+    archiveBaseName.set('emailconverter')
 }
 
 repositories {
@@ -45,11 +48,10 @@ dependencies {
     implementation 'com.github.markusbernhardt:proxy-vole:1.0.5'
     implementation 'org.simplejavamail:simple-java-mail:8.11.2'
     implementation 'org.simplejavamail:outlook-module:8.11.2'
-    implementation 'org.slf4j:slf4j-simple:1.7.30'
+    implementation 'org.slf4j:slf4j-simple:2.0.13'
 
     testImplementation 'junit:junit:4.+'
     testImplementation 'org.hamcrest:hamcrest-all:1.+'
-    testImplementation 'com.github.stefanbirkner:system-rules:1.+'
 }
 
 /* launch4j launch configuration */
@@ -116,14 +118,9 @@ spotless {
 compileJava.dependsOn spotlessApply
 
 /* spotbugs configuration */
-spotbugs {
-    effort 'max'
-    reportLevel 'high'
-}
-
 spotbugsMain {
     reports {
-        xml.enabled = false
-        html.enabled = true
+        xml { required.set(false) }
+        html { required.set(true) }
     }
 }
