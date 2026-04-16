@@ -33,7 +33,7 @@ import javax.swing.text.Element;
  * from the start. b) if you insert text at the beginning of the Document, then
  * you would want to remove lines from the end.
  */
-public class LimitLinesDocumentListener implements DocumentListener {
+public final class LimitLinesDocumentListener implements DocumentListener {
     private int maximumLines;
     private boolean isRemoveFromStart;
 

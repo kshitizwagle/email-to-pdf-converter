@@ -118,6 +118,10 @@ spotless {
 compileJava.dependsOn spotlessApply
 
 /* spotbugs configuration */
+spotbugs {
+    excludeFilter = file('gradle/config/spotbugs/exclude.xml')
+}
+
 spotbugsMain {
     reports {
         xml { required.set(false) }

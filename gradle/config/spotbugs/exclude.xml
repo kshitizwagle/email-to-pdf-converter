@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Exclude medium and low confidence bugs, matching the original reportLevel 'high' behaviour.
+    Priority/Confidence: HIGH=1, MEDIUM=2, LOW=3
+-->
+<FindBugsFilter>
+    <Match>
+        <Priority value="2"/>
+    </Match>
+    <Match>
+        <Priority value="3"/>
+    </Match>
+</FindBugsFilter>
