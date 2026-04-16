@@ -12,10 +12,10 @@ jobs:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
-    - name: Set up JDK 21
+    - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
-        java-version: 21
+        java-version: 17
         distribution: 'temurin'
     - name: Formatting Check
       run: ./gradlew spotlessCheck
@@ -40,15 +40,16 @@ jobs:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
-    - name: Set up JDK 21
+    - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
-        java-version: 21
+        java-version: 17
         distribution: 'temurin'
     - name: Build Jar
       run: ./gradlew shadowJar
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
       with:
+        name: latest
         generate_release_notes: true
         files: build/libs/emailconverter-*-all.jar
