@@ -48,10 +48,10 @@ jobs:
     - name: Build Jar
       run: ./gradlew shadowJar
     - name: Rename Jar
-      run: cp build/libs/emailconverter-*-all.jar build/libs/emailconverter.jar
+      run: cp build/libs/emailconverter-*-all.jar build/libs/email_converter.jar
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
       with:
         name: latest
         generate_release_notes: true
-        files: build/libs/emailconverter.jar
+        files: build/libs/email_converter.jar
